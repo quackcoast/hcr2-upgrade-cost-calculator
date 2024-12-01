@@ -5,8 +5,8 @@ WHEN YOU DOWNLOAD THIS THERE WILL BE A FALSE POSITIVE FOR BEING A VIRUS. THIS IS
 
 You can also just use the c++ code in main.
 
--=-=-=-=-=-=-=-=-
-Future plans:
+-=-=-=-=-=-=-=-=- \n
+Future plans: \n
 *add pastebin so users dont have to enter all the same levels again in again
--=-=-=-=-=-=-=-=-
+-=-=-=-=-=-=-=-=- \n
 
