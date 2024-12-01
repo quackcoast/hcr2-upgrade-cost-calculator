@@ -7,6 +7,6 @@ You can also just use the c++ code in main.
 
 -=-=-=-=-=-=-=-=-
 Future plans:
-*add pastebin so users dont have to enter all the same levels again in again
+add pastebin so users dont have to enter all the same levels again in again
 -=-=-=-=-=-=-=-=-
 
