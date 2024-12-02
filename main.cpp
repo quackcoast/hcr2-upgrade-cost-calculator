@@ -8,8 +8,6 @@
 
 using namespace std;
 
-// Function to check which cars are unlocked
-
 struct Upgrade {
     string carName;
     int level;
