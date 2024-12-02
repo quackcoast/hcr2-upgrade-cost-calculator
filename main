@@ -3,6 +3,8 @@
 #include <string>
 #include <unordered_map>
 #include <algorithm>
+#include <fstream>
+#include <sstream>
 
 using namespace std;
 
@@ -159,9 +161,9 @@ void findCheapestUpgrades(int budget, const vector<char>& hasCar, const vector<s
         return a.cost < b.cost;
     });
 
-    // Display top 10 affordable upgrades
-    cout << "\nTop 10 Cheapest Upgrades within Budget:\n";
-    for (int i = 0; i < min(10, (int)affordableUpgrades.size()); ++i) {
+    // Display top 50 affordable upgrades
+    cout << "\nTop 50 Cheapest Upgrades within Budget:\n";
+    for (int i = 0; i < min(50, (int)affordableUpgrades.size()); ++i) {
         const auto& upgrade = affordableUpgrades[i];
         cout << i + 1 << ". " << upgrade.carName
              << " - Upgrade Part " << (i % 4 + 1)  // Show part being upgraded
@@ -170,10 +172,70 @@ void findCheapestUpgrades(int budget, const vector<char>& hasCar, const vector<s
     }
 }
 
+// Function to save data to a file
+void saveDataToFile(const vector<char>& hasCar, const vector<vector<int>>& carAttributes) {
+    ofstream outFile("carData.txt");
+    if (!outFile) {
+        cout << "Error opening file for saving data.\n";
+        return;
+    }
+    
+    // Save car ownership
+    for (char c : hasCar) {
+        outFile << c << ' ';
+    }
+    outFile << '\n';
 
+    // Save car attributes
+    for (const auto& attributes : carAttributes) {
+        for (int attr : attributes) {
+            outFile << attr << ' ';
+        }
+        outFile << '\n';
+    }
+    outFile.close();
+    cout << "Data saved successfully.\n";
+}
+
+// Function to load data from a file
+bool loadDataFromFile(vector<char>& hasCar, vector<vector<int>>& carAttributes) {
+    ifstream inFile("carData.txt");
+    if (!inFile) {
+        cout << "No saved data found.\n";
+        return false;
+    }
+
+    hasCar.clear();
+    carAttributes.clear();
+
+    string line;
+    
+    // Load car ownership
+    getline(inFile, line);
+    istringstream carStream(line);
+    char response;
+    while (carStream >> response) {
+        hasCar.push_back(response);
+    }
+
+    // Load car attributes
+    while (getline(inFile, line)) {
+        istringstream attrStream(line);
+        vector<int> attributes;
+        int attr;
+        while (attrStream >> attr) {
+            attributes.push_back(attr);
+        }
+        carAttributes.push_back(attributes);
+    }
+    inFile.close();
+    cout << "Data loaded successfully.\n";
+    return true;
+}
 
 int main() {
     vector<char> hasCar;
+    vector<vector<int>> carAttributes;
     vector<string> carList = {
         "Hill Climber", "Hill Climber Mk. 2", "Sports Car", "Dune Buggy", "Super Diesel", 
         "Superbike", "Supercar", "Rally Car", "Lowrider", "Beast", "Hot Rod", 
@@ -183,16 +245,27 @@ int main() {
         "Tractor", "Scooter", "Glider"
     };
 
-    // Get user car ownership information
-    hasCar = carUnlocked();  // Function that returns vector<char> of 'y' or 'n' responses
+    char useSavedData;
+    cout << "Do you have a saved data code? (y/n): ";
+    cin >> useSavedData;
 
-    // Collect car attributes levels
-    vector<vector<int>> carAttributes = getCarAttributes(hasCar, carList);
+    if (useSavedData == 'y' && loadDataFromFile(hasCar, carAttributes)) {
+        cout << "Loaded data will be used.\n";
+    } else {
+        // Get user car ownership information
+        hasCar = carUnlocked();
+
+        // Collect car attributes levels
+        carAttributes = getCarAttributes(hasCar, carList);
+
+        // Save the data for future use
+        saveDataToFile(hasCar, carAttributes);
+    }
 
     // Get the user's available budget
     int budget = getUserBudget();
 
-    // Find and display the 10 cheapest upgrades within budget
+    // Find and display the cheapest upgrades within budget
     findCheapestUpgrades(budget, hasCar, carList, carAttributes);
 
     return 0;
